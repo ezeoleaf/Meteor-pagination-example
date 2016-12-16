@@ -1,4 +1,4 @@
-Meteor.publish('customers', function(skipCount,sortField, sortDirection) {
+Meteor.publish('studies', function(skipCount,sortField, sortDirection) {
 	Meteor._sleepForMs(1000);
   var positiveIntegerCheck = Match.Where(function(x) {
     check(x, Match.Integer);
@@ -6,21 +6,15 @@ Meteor.publish('customers', function(skipCount,sortField, sortDirection) {
   });
   check(skipCount, positiveIntegerCheck);
 
-  Counts.publish(this, 'customerCount', Customers.find(), { 
+  Counts.publish(this, 'studiesCount', Studies.find(), { 
     noReady: true
   });
   
   var sortParams = {};
   sortParams[sortField] = sortDirection;
-  return Customers.find({}, {
+  return Studies.find({}, {
     limit: parseInt(Meteor.settings.public.recordsPerPage),
     skip: skipCount,
     sort: sortParams
   });
-  /*
-  return Customers.find({}, {
-    limit: parseInt(Meteor.settings.public.recordsPerPage),
-    skip: skipCount
-  });
-  */
 });

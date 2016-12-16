@@ -1,8 +1,8 @@
 // Fixture data
 Meteor.startup(function() {
-	if (Customers.find().count() !== 1001) {
+	if (Studies.find().count() !== 1001) {
 
-		Customers.remove({});
+		Studies.remove({});
 		for(var i = 1; i < 1001; i++) {
 			var randVal = Math.round((Math.random() * 6) + 1);
 			var studyFieldValue = 's'+randVal;
@@ -14,7 +14,7 @@ Meteor.startup(function() {
 				studyField: studyFieldValue
 			}
 			
-			Customers.insert(newObj);
+			Studies.insert(newObj);
 		}
 	}
 });

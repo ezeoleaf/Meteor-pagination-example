@@ -1,4 +1,4 @@
-Template.listCustomers.onCreated(function() {
+Template.listStudies.onCreated(function() {
   var template = this;
   this.selectedMonth = new ReactiveVar();
   this.selectedFields = new ReactiveVar();
@@ -6,12 +6,12 @@ Template.listCustomers.onCreated(function() {
 
   template.autorun(function() {
     var skipCount = (currentPage() - 1) * Meteor.settings.public.recordsPerPage;
-    template.subscribe('customers', skipCount, "startDate_sort", 1);
+    template.subscribe('studies', skipCount, "startDate_sort", 1);
   });
 });
 
-Template.listCustomers.helpers({
-  customers: function() {
+Template.listStudies.helpers({
+  studies: function() {
     var month = Template.instance().selectedMonth.get();
     var fields = Template.instance().selectedFields.get();
 
@@ -36,12 +36,12 @@ Template.listCustomers.helpers({
       queryObj.$where = function() { return this.startDate.getMonth() == month}
     }
 
-    return Customers.find(queryObj ? queryObj : {});
+    return Studies.find(queryObj ? queryObj : {});
   },
 
   pages: function() {
 
-    if(Counts.get('customerCount') <= 20) {
+    if(Counts.get('studiesCount') <= 20) {
       return [];
     }
 
@@ -51,8 +51,8 @@ Template.listCustomers.helpers({
     var start;
     if(cur == 1 || cur == 2) {
       start = 1;
-    } else if((cur + 5) > parseInt(Counts.get('customerCount') / Meteor.settings.public.recordsPerPage)) {
-      start = parseInt(Counts.get('customerCount') / Meteor.settings.public.recordsPerPage) - 4;
+    } else if((cur + 5) > parseInt(Counts.get('studiesCount') / Meteor.settings.public.recordsPerPage)) {
+      start = parseInt(Counts.get('studiesCount') / Meteor.settings.public.recordsPerPage) - 4;
     } else {
       start = cur - 2;
     }
@@ -75,11 +75,11 @@ Template.listCustomers.helpers({
   },
   prevPage: function() {
     var previousPage = currentPage() === 1 ? 1 : currentPage() - 1;
-    return Router.routes.listCustomers.path({page: previousPage});
+    return Router.routes.listStudies.path({page: previousPage});
   },
   nextPage: function() {
     var nextPage = hasMorePages() ? currentPage() + 1 : currentPage();
-    return Router.routes.listCustomers.path({page: nextPage});
+    return Router.routes.listStudies.path({page: nextPage});
   },
   prevPageClass: function() {
     return currentPage() <= 1 ? "disabled" : "";
@@ -88,10 +88,10 @@ Template.listCustomers.helpers({
     return hasMorePages() ? "" : "disabled";
   },
   firstPage: function() {
-    return Router.routes.listCustomers.path({page: 1});
+    return Router.routes.listStudies.path({page: 1});
   },
   lastPage: function() {
-    return Router.routes.listCustomers.path({page: parseInt(Counts.get('customerCount') / Meteor.settings.public.recordsPerPage)});
+    return Router.routes.listStudies.path({page: parseInt(Counts.get('studiesCount') / Meteor.settings.public.recordsPerPage)});
   },
   firstPageClass: function() {
     return currentPage() <= 1 ? "disabled" : "";
@@ -100,7 +100,7 @@ Template.listCustomers.helpers({
     return hasMorePages() ? "" : "disabled";
   },
   show: function() {
-    return (Counts.get('customerCount') <= 20) ? 'display: none' :'';
+    return (Counts.get('studiesCount') <= 20) ? 'display: none' :'';
   },
   monthOptions: function() {
     var date = today();
@@ -145,7 +145,7 @@ Template.registerHelper('formatDate', function(date) {
   return day+'/'+month+'/'+year;
 });
 
-Template.listCustomers.events({
+Template.listStudies.events({
   'change #select': function(e,t) {
     
     var currentTarget = e.currentTarget;
@@ -173,8 +173,8 @@ Template.listCustomers.events({
 });
 
 var hasMorePages = function() {
-  var totalCustomers = Counts.get('customerCount');
-  return currentPage() * parseInt(Meteor.settings.public.recordsPerPage) < totalCustomers;
+  var totalStudies = Counts.get('studiesCount');
+  return currentPage() * parseInt(Meteor.settings.public.recordsPerPage) < totalStudies;
 }
 
 var currentPage = function() {
