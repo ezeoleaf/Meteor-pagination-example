@@ -10,3 +10,5 @@ twbs:bootstrap
 sacha:spin
 aldeed:simple-schema
 tmeasday:publish-counts
+aldeed:collection2
+reactive-var

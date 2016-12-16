@@ -1,5 +1,10 @@
 <template name="listCustomers">
-	
+	<select class="soflow-color" id="select">
+		<option value="0">All</option>
+		{{#each monthOptions}}
+			<option value="{{value}}">{{name}}</option>
+		{{/each}}
+  </select>
 	{{#unless Template.subscriptionsReady}}
 		{{> spinner}}
 	{{/unless}}
@@ -30,6 +35,17 @@
           <span aria-hidden="true">&larr;</span> Previous
         </a>
       </li>
+			{{#each pages}}
+				{{#if current}}
+					<li>
+						<a class="current" href="{{value}}">{{value}}</a>
+					</li>
+				{{else}}
+					<li>
+						<a href="{{value}}">{{value}}</a>
+					</li>
+				{{/if}}	
+			{{/each}}
       <li class="{{nextPageClass}}">
         <a id="nextPage" href="{{nextPage}}">
           Next <span aria-hidden="true">&rarr;</span>
