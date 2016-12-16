@@ -1,10 +1,55 @@
 <template name="listCustomers">
-	<select class="soflow-color" id="select">
-		<option value="0">All</option>
-		{{#each monthOptions}}
-			<option value="{{value}}">{{name}}</option>
-		{{/each}}
-  </select>
+	<table class="table">
+		<thead>
+			<tr>
+				<th colspan="2" class="headFilter">
+					Filters
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<select class="soflow-color" id="select">
+						<option value="0">All</option>
+						{{#each monthOptions}}
+							<option value="{{value}}">{{name}}</option>
+						{{/each}}
+					</select>
+				</td>
+				<td>
+					<table class="table checkTable">
+						<tr>
+							<td>
+								<input type="checkbox" class="check" name="checkS1" value="s1"> S1
+							</td>
+							<td>
+								<input type="checkbox" class="check" name="checkS3" value="s3"> S3
+							</td>
+							<td>
+								<input type="checkbox" class="check" name="checkS5" value="s5"> S5
+							</td>
+							<td>
+								<input type="checkbox" class="check" name="checkS7" value="s7"> S7
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="checkbox" class="check" name="checkS2" value="s2"> S2
+							</td>
+							<td>
+								<input type="checkbox" class="check" name="checkS4" value="s4"> S4
+							</td>
+							<td>
+								<input type="checkbox" class="check" name="checkS6" value="s6"> S6
+							</td>
+						</tr>
+					</table>
+
+				</td>
+			</tr>
+		</tbody>
+	</table>
 	{{#unless Template.subscriptionsReady}}
 		{{> spinner}}
 	{{/unless}}
@@ -30,7 +75,12 @@
 	</table>
 	<nav>
     <ul class="pager">
-      <li class="{{prevPageClass}}">
+      <li class="{{firstPageClass}}" style="{{show}}">
+        <a id="firstPage" href="{{firstPage}}">
+          <span aria-hidden="true">&Larr;</span> First
+        </a>
+      </li>
+			<li class="{{prevPageClass}}" style="{{show}}">
         <a id="prevPage" href="{{prevPage}}">
           <span aria-hidden="true">&larr;</span> Previous
         </a>
@@ -46,9 +96,14 @@
 					</li>
 				{{/if}}	
 			{{/each}}
-      <li class="{{nextPageClass}}">
+      <li class="{{nextPageClass}}" style="{{show}}">
         <a id="nextPage" href="{{nextPage}}">
           Next <span aria-hidden="true">&rarr;</span>
+        </a>
+      </li>
+			<li class="{{lastPageClass}}" style="{{show}}">
+        <a id="lastPage" href="{{lastPage}}">
+          <span aria-hidden="true">&Rarr;</span> Last
         </a>
       </li>
     </ul>

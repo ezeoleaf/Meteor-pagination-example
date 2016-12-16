@@ -4,7 +4,7 @@ Meteor.startup(function() {
 
 		Customers.remove({});
 		for(var i = 1; i < 1001; i++) {
-			var randVal = Math.round((Math.random() * 7) + 1);
+			var randVal = Math.round((Math.random() * 6) + 1);
 			var studyFieldValue = 's'+randVal;
 			var actualDate = new Date();
 			var newDate = actualDate.setDate(actualDate.getDate() + (Math.round(Math.random() * 366)));

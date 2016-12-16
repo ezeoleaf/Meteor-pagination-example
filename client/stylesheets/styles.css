@@ -46,3 +46,13 @@ select.soflow-color {
    border-radius: 20px;
    padding-left: 15px;
 }
+
+.checkTable {
+    margin-top: 16px !important;
+    margin-bottom: 0px !important;
+    background: transparent !important;
+}
+
+.headFilter {
+    text-align: center;
+}

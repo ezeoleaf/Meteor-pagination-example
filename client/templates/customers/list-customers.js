@@ -1,6 +1,8 @@
 Template.listCustomers.onCreated(function() {
   var template = this;
-  this.selectedCategory = new ReactiveVar();
+  this.selectedMonth = new ReactiveVar();
+  this.selectedFields = new ReactiveVar();
+  this.selectedFields.set([]);
 
   template.autorun(function() {
     var skipCount = (currentPage() - 1) * Meteor.settings.public.recordsPerPage;
@@ -10,10 +12,38 @@ Template.listCustomers.onCreated(function() {
 
 Template.listCustomers.helpers({
   customers: function() {
-    var category = Template.instance().selectedCategory.get();
-    return Customers.find(category ? {studyField: category} : {});
+    var month = Template.instance().selectedMonth.get();
+    var fields = Template.instance().selectedFields.get();
+
+    var queryFields = [];
+    //console.log(fields.length);
+    for(var i = 0; i < fields.length; i++) {
+      var obj = {
+        studyField: fields[i]
+      };
+
+      queryFields.push(obj);
+    }
+
+    var queryObj = {};
+
+    //Create the query object
+    if(queryFields.length > 0) {
+      queryObj.$or = queryFields;
+    }
+
+    if(month != undefined && month != -1) {
+      queryObj.$where = function() { return this.startDate.getMonth() == month}
+    }
+
+    return Customers.find(queryObj ? queryObj : {});
   },
+
   pages: function() {
+
+    if(Counts.get('customerCount') <= 20) {
+      return [];
+    }
 
     var cur = currentPage();
     
@@ -21,8 +51,8 @@ Template.listCustomers.helpers({
     var start;
     if(cur == 1 || cur == 2) {
       start = 1;
-    } else if((cur + 5) > (Counts.get('customerCount') / Meteor.settings.public.recordsPerPage)) {
-      start = (Counts.get('customerCount') / Meteor.settings.public.recordsPerPage) - 5;
+    } else if((cur + 5) > parseInt(Counts.get('customerCount') / Meteor.settings.public.recordsPerPage)) {
+      start = parseInt(Counts.get('customerCount') / Meteor.settings.public.recordsPerPage) - 4;
     } else {
       start = cur - 2;
     }
@@ -56,6 +86,21 @@ Template.listCustomers.helpers({
   },
   nextPageClass: function() {
     return hasMorePages() ? "" : "disabled";
+  },
+  firstPage: function() {
+    return Router.routes.listCustomers.path({page: 1});
+  },
+  lastPage: function() {
+    return Router.routes.listCustomers.path({page: parseInt(Counts.get('customerCount') / Meteor.settings.public.recordsPerPage)});
+  },
+  firstPageClass: function() {
+    return currentPage() <= 1 ? "disabled" : "";
+  },
+  lastPageClass: function() {
+    return hasMorePages() ? "" : "disabled";
+  },
+  show: function() {
+    return (Counts.get('customerCount') <= 20) ? 'display: none' :'';
   },
   monthOptions: function() {
     var date = today();
@@ -105,12 +150,25 @@ Template.listCustomers.events({
     
     var currentTarget = e.currentTarget;
     var newValue = currentTarget.options[currentTarget.selectedIndex].value;
-    t.selectedCategory.set('s1');
-    //console.log(Customers.find({ studyField: 's1' }));
-     //Customers.update(this._id, {$set: { studyField: 's1' }} ) ;
-    //Tasks.update(this._id, {
-      //$set: { checked: ! this.checked },
-    //});
+    t.selectedMonth.set((newValue -1));
+  },
+
+  'change .check' : function(e,t) {
+    var currentChecks = Template.instance().selectedFields.get();
+    var currentTarget = e.currentTarget;
+    var newValue = currentTarget.value;
+
+    if(currentChecks.indexOf(newValue) == -1) {
+      currentChecks.push(newValue);
+    } else {
+      currentChecks.splice(currentChecks.indexOf(newValue),1);
+    }
+
+    t.selectedFields.set(currentChecks);
+    //console.log(t);
+    //t.view._render()
+    //t.view.template.renderFunction()[2]._render()
+    //t._reload.reload();
   }
 });
 
